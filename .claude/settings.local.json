@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find . -iname \"CLAUDE.md\" -o -iname \".cursorrules\")",
+      "Bash(find . -path \"*/.cursor/rules*\")",
+      "Bash(find . -path \"*copilot-instructions*\")",
+      "Bash(find . -iname \"README*\")"
+    ]
+  }
+}
