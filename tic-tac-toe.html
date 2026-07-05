@@ -58,26 +58,6 @@
     font-size: 1rem;
   }
   .status.win { color: var(--win); font-weight: 600; }
-  .mode {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
-  .mode button {
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--text);
-    padding: 6px 14px;
-    border-radius: 999px;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .mode button.active {
-    background: var(--text);
-    color: var(--panel);
-    border-color: var(--text);
-  }
   .board {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -138,11 +118,6 @@
   <h1>Tic-Tac-Toe</h1>
   <p class="status" id="status">X's turn</p>
 
-  <div class="mode">
-    <button id="mode-2p" class="active">2 Player</button>
-    <button id="mode-cpu">Vs Computer</button>
-  </div>
-
   <div class="board" id="board"></div>
 
   <button class="reset" id="reset">New Round</button>
@@ -159,8 +134,6 @@
   const boardEl = document.getElementById('board');
   const statusEl = document.getElementById('status');
   const resetBtn = document.getElementById('reset');
-  const mode2p = document.getElementById('mode-2p');
-  const modeCpu = document.getElementById('mode-cpu');
   const scoreXEl = document.getElementById('score-x');
   const scoreOEl = document.getElementById('score-o');
   const scoreDEl = document.getElementById('score-d');
@@ -174,7 +147,6 @@
   let board = Array(9).fill(null);
   let current = 'X';
   let gameOver = false;
-  let vsCpu = false;
   const scores = { X: 0, O: 0, D: 0 };
 
   const cells = [];
@@ -212,11 +184,6 @@
     if (board[i] || gameOver) return;
     board[i] = current;
     afterMove();
-    if (!gameOver && vsCpu && current === 'O') {
-      render();
-      statusEl.textContent = "Computer thinking...";
-      setTimeout(cpuMove, 350);
-    }
   }
 
   function afterMove() {
@@ -244,34 +211,6 @@
     render();
   }
 
-  function cpuMove() {
-    if (gameOver) return;
-    const move = bestMove();
-    if (move !== -1) {
-      board[move] = 'O';
-      afterMove();
-    }
-  }
-
-  function bestMove() {
-    const empty = board.map((v, i) => v === null ? i : -1).filter(i => i !== -1);
-
-    for (const i of empty) {
-      const copy = board.slice();
-      copy[i] = 'O';
-      if (checkWinner(copy)) return i;
-    }
-    for (const i of empty) {
-      const copy = board.slice();
-      copy[i] = 'X';
-      if (checkWinner(copy)) return i;
-    }
-    if (board[4] === null) return 4;
-    const corners = [0, 2, 6, 8].filter(i => board[i] === null);
-    if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
-    return empty.length ? empty[Math.floor(Math.random() * empty.length)] : -1;
-  }
-
   function updateScores() {
     scoreXEl.textContent = scores.X;
     scoreOEl.textContent = scores.O;
@@ -288,20 +227,6 @@
   }
 
   resetBtn.addEventListener('click', resetRound);
-
-  mode2p.addEventListener('click', () => {
-    vsCpu = false;
-    mode2p.classList.add('active');
-    modeCpu.classList.remove('active');
-    resetRound();
-  });
-
-  modeCpu.addEventListener('click', () => {
-    vsCpu = true;
-    modeCpu.classList.add('active');
-    mode2p.classList.remove('active');
-    resetRound();
-  });
 
   render();
 })();
